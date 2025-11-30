@@ -60,21 +60,76 @@ ipconfig
 flutter run --dart-define=API_URL_Dedalus=http://192.168.1.10:3000 -d <device-id>
 ```
 
-## Qué cambiar en el proyecto (opcional)
-- El servicio HTTP usa por defecto la variable de entorno `API_URL_Dedalus`. Puedes sobrescribirla con `--dart-define` (ver ejemplos arriba).
-- Alternativa temporal en código: cambiar el valor por defecto dentro de `AuthService` / `BookingService` (no recomendado para commits).
+## Acceso rápido al backend local desde el móvil (USB / Wi‑Fi)
 
-## Comprobaciones si falla la conexión
-- Desde el móvil, tras `adb reverse`, abre en el navegador: `http://localhost:3000/api/v1/` para confirmar acceso.
-- Si usas IP LAN, abre `http://<your-pc-ip>:3000/api/v1/` en el móvil.
-- Verifica que el backend escucha en `0.0.0.0` y no solo en `127.0.0.1`.
-- Si adb no se reconoce, añade `D:\Android\Sdk\platform-tools` a tu PATH (ver pasos arriba).
+Si quieres automatizar el flujo para que la app en el móvil use el backend que tienes en tu PC (localhost:3000), aquí tienes pasos y un script.
 
-## Atajos de desarrollo (hot reload / hot restart)
-- Con `flutter run` en la terminal en la que la app esté corriendo:
-  - `r` → hot reload
-  - `R` → hot restart
-  - `q` → salir
+Requisitos
+- adb en PATH (ej. D:\Android\Sdk\platform-tools)
+- PC y móvil en la misma red si usas Wi‑Fi
+- Backend corriendo en el puerto 3000
+
+A) Usar adb reverse (por USB — mantiene http://localhost:3000 en la app)
+1. Conectar el dispositivo por USB y autorizar la depuración.
+2. Ejecutar:
+```powershell
+adb devices
+adb reverse tcp:3000 tcp:3000
+```
+3. Ejecutar la app:
+```powershell
+flutter run -d <device-id>
+```
+4. Para quitar el reenvío:
+```powershell
+adb reverse --remove-all
+```
+
+B) Depuración por Wi‑Fi (adb over TCP)
+1. Conectar el móvil por USB (una vez).
+2. Poner adb en modo TCP:
+```powershell
+adb tcpip 5555
+```
+3. Obtener la IP del móvil (ej. 192.168.0.19) y conectar por IP:
+```powershell
+adb connect 192.168.0.19:5555
+adb devices
+```
+4. (Opcional) reenviar puerto 3000:
+```powershell
+adb reverse tcp:3000 tcp:3000
+```
+5. Ejecutar la app inalámbrica:
+```powershell
+flutter run -d 192.168.0.19:5555
+```
+6. Para volver a USB:
+```powershell
+adb disconnect 192.168.0.19:5555
+adb usb
+adb reverse --remove-all
+```
+
+Comprobaciones rápidas
+- Desde el móvil (tras adb reverse) abre: http://localhost:3000/api/v1/
+- Si usas IP LAN: abre http://<TU_PC_IP>:3000/api/v1/ en el navegador del móvil.
+- Si adb no está en PATH, agrega `D:\Android\Sdk\platform-tools` al Path o ejecuta temporalmente:
+```powershell
+$env:Path += ";D:\Android\Sdk\platform-tools"
+```
+
+## Script PowerShell opcional
+En la carpeta `scripts/` puedes añadir un script para ejecutar adb reverse y lanzar flutter run automáticamente (ejecutar en PowerShell desde la raíz del proyecto):
+
+```powershell
+# script para adb reverse y flutter run
+$deviceId = "<tu-device-id>" # Cambia esto por tu device id
+$apiUrl = "http://localhost:3000"
+
+adb reverse tcp:3000 tcp:3000
+flutter run -d $deviceId --dart-define=API_URL_Dedalus=$apiUrl
+```
 
 ---
 

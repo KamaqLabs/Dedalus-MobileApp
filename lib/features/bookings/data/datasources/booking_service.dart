@@ -4,7 +4,7 @@ import 'package:dedalus/features/bookings/data/models/booking_dto.dart';
 import 'package:dedalus/features/bookings/data/models/create_booking_request_dto.dart';
 
 class BookingService {
-  static const String _defaultBase = 'http://localhost:3000/api/v1';
+  static const String _defaultBase = 'https://sogw0gwg8w0w8ok8gkgwsso0.4.201.187.236.sslip.io/api/v1';
   static final String baseUrl =
       const String.fromEnvironment('API_URL_Dedalus', defaultValue: _defaultBase);
 

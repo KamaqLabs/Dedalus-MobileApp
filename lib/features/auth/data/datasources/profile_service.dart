@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:dedalus/features/auth/data/models/user_dto.dart';
 
 class ProfileService {
-  static const String _defaultBase = 'http://localhost:3000/api/v1';
+  static const String _defaultBase = 'https://sogw0gwg8w0w8ok8gkgwsso0.4.201.187.236.sslip.io/api/v1';
   static final String baseUrl =
       const String.fromEnvironment('API_URL_Dedalus', defaultValue: _defaultBase);
 

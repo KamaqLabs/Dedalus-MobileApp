@@ -7,7 +7,7 @@ import '../models/user_request_dto.dart';
 class AuthService {
   // Se puede sobrescribir con --dart-define=API_URL_Dedalus=<url>
   static const String _defaultBase =
-      'http://localhost:3000/api/v1'; // valor por defecto para desarrollo
+      'https://sogw0gwg8w0w8ok8gkgwsso0.4.201.187.236.sslip.io/api/v1'; 
   static final String baseUrl =
       const String.fromEnvironment('API_URL_Dedalus', defaultValue: _defaultBase);
 
