@@ -42,3 +42,6 @@ android {
 flutter {
     source = "../.."
 }
+
+// Aplica el plugin de Google Services para Android (Kotlin DSL)
+apply(plugin = "com.google.gms.google-services")
